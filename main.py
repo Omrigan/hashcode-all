@@ -14,7 +14,6 @@ def solve_antoio(p : Problem):
             if s.sizes[c[0]] + p.video_sizes[video] < p.X:
                 s.attach(c[0] ,video)
                 break
-    print(s.cache_servers)
     return s
 
 '''    
@@ -30,7 +29,7 @@ def solve_antoio(p : Problem):
 
 if __name__ == "__main__":    
     p = Problem('streaming/kittens.in.txt')
-    s = stupid_solve(p)
+    s = solve_antoio(p)
     assert s.check_correctness()
     print(s.calculate_score())
     #s.write('solutions/kittens.out')
