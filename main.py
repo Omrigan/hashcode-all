@@ -1,14 +1,5 @@
 from read_write import Problem, Solution
-
-def stupid_solve(p):
-    s = Solution(p)
-    for c in range(p.C):
-        total_sum = 0
-        this_server_videos = set()
-        while True:
-            
-            s.cache_servers[]
-
+from dummy import stupid_solve
 if __name__ == "__main__":    
     p = Problem('streaming/kittens.in.txt')
     s = stupid_solve(p)

@@ -11,6 +11,7 @@ class Problem:
         self.endpoints_connections = [] # (cache_id, latency)
         self.endpoints_caches = [[INFTY for i in range(self.C)] for j in range(self.E)]
         self.requests = [] # (video_id, endpoint_id, number)
+        self.total_requests = 0
         
         for i in range(self.E):
             latency, number_of_cons = int_line(f)
@@ -25,6 +26,7 @@ class Problem:
             self.endpoints_connections.append(cons)
         for i in range(self.R):
             self.requests.append(int_line(f))
+            self.total_requests += self.requests[-1][2]
 
 class Solution:
     def __init__(self, p : Problem):
@@ -35,7 +37,7 @@ class Solution:
         f.write("%s\n" % len(self.cache_servers))
         for i in range(len(self.cache_servers)):
             f.write("%s " % i)
-            f.write(" ".join(self.cache_servers[i]))
+            f.write(" ".join(str(x) for x in self.cache_servers[i]))
             f.write("\n")
 
     def check_correctness(self):
@@ -44,14 +46,15 @@ class Solution:
             for video in server:
                 size+=self.p.video_sizes[video]
             if size>self.p.X:
+                print("Solution incorrect. Video %s, size %s, max %s" % (video, size, self.p.X))
                 return False
         return True
     
     def calculate_score(self):
         video_to_servers = [[] for i in range(self.p.V)]
-        for server in self.cache_servers:
+        for i, server in enumerate(self.cache_servers):
             for video in server:
-                video_to_servers[video].append(server)
+                video_to_servers[video].append(i)
         total_improve = 0
         for req in self.p.requests:
             baseline_latency = self.p.endpoints_server_latencies[req[1]]
@@ -59,6 +62,8 @@ class Solution:
             for server in video_to_servers[req[0]]:
                 minmal_latency = min(minmal_latency, self.p.endpoints_caches[req[1]][server])
             total_improve+=(baseline_latency-minmal_latency)*req[2]
+        total_improve/=self.p.total_requests
+        total_improve*=1000
         return total_improve
 
 
