@@ -5,10 +5,16 @@ class Problem:
 
     def __init__(self, filename):
         f = open(filename)
+        #V = number of videos
+        #E = number of endpoints  
+        #R = number of request descriprion
+        #C = number of cache servers
+        #X = capacity of each cache server
+
         self.V, self.E, self.R, self.C, self.X = int_line(f)
         self.video_sizes = list(int_line(f))
         self.endpoints_server_latencies = []
-        self.endpoints_connections = [] # (cache_id, latency)
+        self.endpoints_connections = [] # endpoints_connections[cache_id] =  latency
         self.endpoints_caches = [[INFTY for i in range(self.C)] for j in range(self.E)]
         self.requests = [] # (video_id, endpoint_id, number)
         self.total_requests = 0
@@ -16,8 +22,6 @@ class Problem:
         for i in range(self.E):
             latency, number_of_cons = int_line(f)
             self.endpoints_server_latencies.append(latency)
-            self.endpoints_connections.append(latency)
-            
             cons = []
             for j in range(number_of_cons):
                 cache_id, latency = int_line(f)
@@ -32,6 +36,12 @@ class Solution:
     def __init__(self, p : Problem):
         self.p = p
         self.cache_servers = [[] for i in range(p.C)]
+        self.sizes = [ 0 for i in range(p.C)]
+    
+    def attach(self,c,v):
+        self.cache_servers[c].append(v)
+        self.sizes[c] += self.p.video_sizes[v]
+
     def write(self, filename):
         f = open(filename, 'w')
         f.write("%s\n" % len(self.cache_servers))
