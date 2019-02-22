@@ -1,7 +1,8 @@
 from read_write import Problem, Solution
+from dummy import stupid_solve
 from tqdm import tqdm
 
-def stupid_solve(p : Problem):
+def solve_antoio(p : Problem):
     s = Solution(p)
     sorted_requests = sorted(p.requests,key = lambda r1 : r1[2] * p.endpoints_server_latencies[r1[1]] )
     for r in tqdm(sorted_requests):
@@ -30,9 +31,10 @@ def stupid_solve(p : Problem):
 
 if __name__ == "__main__":    
     p = Problem('streaming/kittens.in.txt')
+    s = solve_antoio(p)
+    print("Antonio", s.calculate_score())
     s = stupid_solve(p)
-    assert s.check_correctness()
-    print(s.calculate_score())
+    print("Stupid", s.calculate_score())
     #s.write('solutions/kittens.out')
 
 
