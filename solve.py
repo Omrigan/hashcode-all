@@ -10,9 +10,10 @@ def stupid_solve(p : Problem):
         cache_servers = p.endpoints_connections[endpoint]
         cache_servers.sort(key = lambda x : x[1])
         for c in cache_servers:
-            if s.sizes[c[0]] + p.video_sizes[video] < p.X:
-                s.attach(c[0] ,video)
-                break
+            if video not in c:
+                if s.sizes[c[0]] + p.video_sizes[video] < p.X:
+                    s.attach(c[0] ,video)
+                    break
     print(s.cache_servers)
     return s
 
