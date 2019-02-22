@@ -55,12 +55,18 @@ class Solution:
             size = 0
             for video in server:
                 size+=self.p.video_sizes[video]
+            
             if size>self.p.X:
                 print("Solution incorrect. Video %s, size %s, max %s" % (video, size, self.p.X))
                 return False
+            if len(server)>len(set(server)):
+                print("Solution incorrect, video duplicate. Video %s, size %s, max %s" % (video, size, self.p.X))
+                return False
+
         return True
     
     def calculate_score(self):
+        assert self.check_correctness()
         video_to_servers = [[] for i in range(self.p.V)]
         for i, server in enumerate(self.cache_servers):
             for video in server:

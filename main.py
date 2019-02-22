@@ -30,8 +30,9 @@ def solve_antoio(p : Problem):
 if __name__ == "__main__":    
     p = Problem('streaming/kittens.in.txt')
     s = solve_antoio(p)
-    assert s.check_correctness()
-    print(s.calculate_score())
+    print("Antonio", s.calculate_score())
+    s = stupid_solve(p)
+    print("Stupid", s.calculate_score())
     #s.write('solutions/kittens.out')
 
 
