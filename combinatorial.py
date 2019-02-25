@@ -1,49 +1,81 @@
 from ortools.linear_solver import pywraplp
+from read_write import Problem, Solution
+from tqdm import tqdm
 
-def main():
-  solver = pywraplp.Solver('SolveIntegerProblem',
-                           pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
-  # x and y are integer non-negative variables.
-  x = solver.IntVar(0.0, solver.infinity(), 'x')
-  y = solver.IntVar(0.0, solver.infinity(), 'y')
+def solve_combinatorial(problem: Problem):
+    local_requests = problem.requests[:100]
+    cache_range = range(10)
+    
+    solver = pywraplp.Solver('SolveIntegerProblem',
+                             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
-  # x + 7 * y <= 17.5
-  constraint1 = solver.Constraint(-solver.infinity(), 17.5)
-  constraint1.SetCoefficient(x, 1)
-  constraint1.SetCoefficient(y, 7)
+    p_vars = [[solver.IntVar(0.0, 1, 'p_%s_%s' % (v, c))
+               for c in cache_range]
+              for v in range(problem.V)]
 
-  # x <= 3.5
-  constraint2 = solver.Constraint(-solver.infinity(), 3.5)
-  constraint2.SetCoefficient(x, 1)
-  constraint2.SetCoefficient(y, 0)
+    f_vars = []
+    print("P initialized")
 
-  # Maximize x + 10 * y.
-  objective = solver.Objective()
-  objective.SetCoefficient(x, 1)
-  objective.SetCoefficient(y, 10)
-  objective.SetMaximization()
+    objective = solver.Objective()
+    for v, e, number in tqdm(local_requests):
+        req_vars = []
+        for c in cache_range:
+            var = solver.IntVar(0.0, 1, 'f_%s_%s_%s' % (e, v, c))
+            objective.SetCoefficient(var, number * problem.endpoints_caches[e][c])
+            req_vars.append(var)
+        f_vars.append(req_vars)
+    objective.SetMinimization()
+    print("F initialized")
 
-  """Solve the problem and print the solution."""
-  result_status = solver.Solve()
-  # The problem has an optimal solution.
-  assert result_status == pywraplp.Solver.OPTIMAL
+    # Capacity
+    for c in cache_range:
+        constraint = solver.Constraint(-solver.infinity(), problem.X)
+        for v in range(problem.V):
+            size = problem.video_sizes[v]
+            constraint.SetCoefficient(p_vars[v][c], size)
+    print("Capacity done")
 
-  # The solution looks legit (when using solvers other than
-  # GLOP_LINEAR_PROGRAMMING, verifying the solution is highly recommended!).
-  assert solver.VerifySolution(1e-7, True)
+    # Presence
+    for (v, e, number), req_vars in zip(local_requests, f_vars):
+        for c, var in zip(cache_range, req_vars):
+            constraint = solver.Constraint(0, solver.infinity())
+            constraint.SetCoefficient(p_vars[v][c], 1)
+            constraint.SetCoefficient(var, -1)
+    print("Presence done")
+    # From-correctness
+    for req_vars in f_vars:
+        constraint = solver.Constraint(1, 1)
+        for var in req_vars:
+            constraint.SetCoefficient(var, 1)
+    print("From-c done")
 
-  print('Number of variables =', solver.NumVariables())
-  print('Number of constraints =', solver.NumConstraints())
+    """Solve the problem and print the solution."""
+    result_status = solver.Solve()
+    # The problem has an optimal solution.
+    assert result_status == pywraplp.Solver.OPTIMAL
 
-  # The objective value of the solution.
-  print('Optimal objective value = %d' % solver.Objective().Value())
-  print()
-  # The value of each variable in the solution.
-  variable_list = [x, y]
+    # The solution looks legit (when using solvers other than
+    # GLOP_LINEAR_PROGRAMMING, verifying the solution is highly recommended!).
+    assert solver.VerifySolution(1e-7, True)
 
-  for variable in variable_list:
-    print('%s = %d' % (variable.name(), variable.solution_value()))
+    print('Number of variables =', solver.NumVariables())
+    print('Number of constraints =', solver.NumConstraints())
 
-if __name__ == '__main__':
-  main()
+    # The objective value of the solution.
+    print('Optimal objective value = %d' % solver.Objective().Value())
+    print()
+
+    s = Solution(problem)
+
+    for v in range(problem.V):
+        for c in cache_range:
+            # print(v, c, p_vars[v][c].solution_value())
+            if p_vars[v][c].solution_value() > 0:
+                s.cache_servers[c].append(v)
+    return s
+    # The value of each variable in the solution.
+    # variable_list = [x, y]
+
+    # for variable in variable_list:
+    #   print('%s = %d' % (variable.name(), variable.solution_value()))

@@ -1,6 +1,7 @@
 from read_write import Problem, Solution
 from dummy import stupid_solve
 from tqdm import tqdm
+from combinatorial import solve_combinatorial
 
 def solve_antoio(p : Problem):
     s = Solution(p)
@@ -29,6 +30,8 @@ def solve_antoio(p : Problem):
 
 if __name__ == "__main__":    
     p = Problem('streaming/kittens.in.txt')
+    s = solve_combinatorial(p)
+    print("Combinatorial", s.calculate_score())
     s = solve_antoio(p)
     print("Antonio", s.calculate_score())
     s = stupid_solve(p)
