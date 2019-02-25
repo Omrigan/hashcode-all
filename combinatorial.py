@@ -4,11 +4,12 @@ from tqdm import tqdm
 
 
 def solve_combinatorial(problem: Problem):
-    local_requests = problem.requests[:100]
+    local_requests = problem.requests[:1000]
     cache_range = range(10)
     
     solver = pywraplp.Solver('SolveIntegerProblem',
-                             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+                             pywraplp.Solver.BOP_INTEGER_PROGRAMMING,)
+    # solver.set_time_limit(10000)
 
     p_vars = [[solver.IntVar(0.0, 1, 'p_%s_%s' % (v, c))
                for c in cache_range]
@@ -53,7 +54,7 @@ def solve_combinatorial(problem: Problem):
     """Solve the problem and print the solution."""
     result_status = solver.Solve()
     # The problem has an optimal solution.
-    assert result_status == pywraplp.Solver.OPTIMAL
+    # assert result_status == pywraplp.Solver.OPTIMAL
 
     # The solution looks legit (when using solvers other than
     # GLOP_LINEAR_PROGRAMMING, verifying the solution is highly recommended!).
