@@ -32,6 +32,10 @@ class Problem:
             self.requests.append(int_line(f))
             self.total_requests += self.requests[-1][2]
 
+    def sort_cache_endpoint (self) : 
+        for i in range(self.E):
+            self.endpoints_connections[i].sort(key = lambda x : x[1], reverse=True)
+    
 class Solution:
     def __init__(self, p : Problem):
         self.p = p

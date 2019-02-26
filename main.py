@@ -14,7 +14,7 @@ def solve_antoio(p : Problem):
             if video not in c:
                 if s.sizes[c[0]] + p.video_sizes[video] < p.X:
                     s.attach(c[0] ,video)
-                    break
+                    break  
     print(s.cache_servers)
     return s
 
