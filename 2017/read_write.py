@@ -1,5 +1,7 @@
 def int_line(f):
     return tuple(int(x) for x in next(f).split(' '))
+
+
 import random
 
 INFTY = 10 ** 9
@@ -54,11 +56,11 @@ class Problem:
         self.requests = new_requests
         self.R = len(new_requests)
 
-
-    def sort_cache_endpoint (self) : 
+    def sort_cache_endpoint(self):
         for i in range(self.E):
-            self.endpoints_connections[i].sort(key = lambda x : x[1], reverse=True)
-    
+            self.endpoints_connections[i].sort(key=lambda x: x[1], reverse=True)
+
+
 class Solution:
     def __init__(self, p: Problem):
         self.p = p
@@ -70,9 +72,17 @@ class Solution:
     def possible(self, c, v):
         return (self.sizes[c] + self.p.video_sizes[v] < self.p.X) and v not in self.cache_servers[c]
 
+    def normalize_sizes(self):
+        self.sizes = [sum(self.p.video_sizes[v] for v in serv)
+                      for serv in self.cache_servers]
+
     def attach(self, c, v):
         self.cache_servers[c].append(v)
         self.sizes[c] += self.p.video_sizes[v]
+
+    def drop(self, c):
+        self.sizes[c] -= self.p.video_sizes[self.cache_servers[c][-1]]
+        self.cache_servers[c].pop(-1)
 
     def write(self, filename):
         f = open(filename, 'w')
@@ -100,8 +110,9 @@ class Solution:
     def get_minimal_latency(self, v, e):
         return self.request_minimal_latencies.get((v, e)) or self.p.endpoints_server_latencies[e]
 
-    def calculate_score(self):
-        assert self.check_correctness()
+    def calculate_score(self, check_correctness=True):
+        if check_correctness:
+            assert self.check_correctness()
         video_to_servers = [[] for i in range(self.p.V)]
         for i, server in enumerate(self.cache_servers):
             for video in server:
