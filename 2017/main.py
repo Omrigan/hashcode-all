@@ -13,9 +13,17 @@ def solve_antoio(p: Problem):
         cache_servers = p.endpoints_connections[endpoint]
         cache_servers.sort(key=lambda x: x[1])
         for c in cache_servers:
+<<<<<<< HEAD
+            if video not in c:
+                if s.sizes[c[0]] + p.video_sizes[video] < p.X:
+                    s.attach(c[0] ,video)
+                    break  
+    print(s.cache_servers)
+=======
             if s.possible(c[0], video):
                 s.attach(c[0], video)
                 break
+>>>>>>> 3a4a44224c6fde873b0d61cb08f01435bc9e0b13
     return s
 
 
