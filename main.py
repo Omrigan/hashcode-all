@@ -1,0 +1,10 @@
+if __name__ == "__main__":
+    p = Problem('streaming/kittens.in.txt')
+    s = solve_combinatorial2(p)
+    s.write("solutions/kittens-combinatorial.out")
+    print("Combinatorial", s.calculate_score())
+    s = solve_antoio(p)
+    print("Antonio", s.calculate_score())
+    s = stupid_solve(p)
+    print("Stupid", s.calculate_score())
+    # s.write('solutions/kittens.out')
