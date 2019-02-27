@@ -1,6 +1,6 @@
 def int_line(f):
     return tuple(int(x) for x in next(f).split(' '))
-
+import random
 
 INFTY = 10 ** 9
 
@@ -36,7 +36,8 @@ class Problem:
             self.requests.append(int_line(f))
             self.total_requests += self.requests[-1][2]
         self._deduplicate()
-        self.requests.sort(key=lambda x: x[2], reverse=True)
+        # self.requests.sort(key=lambda x: x[2], reverse=True)
+        random.shuffle(self.requests)
 
     def _deduplicate(self):
         self.requests.sort()
@@ -59,6 +60,8 @@ class Solution:
         self.p = p
         self.cache_servers = [[] for i in range(p.C)]
         self.sizes = [0 for i in range(p.C)]
+        self.request_minimal_latencies = {}
+        self.improvements_history = []
 
     def possible(self, c, v):
         return (self.sizes[c] + self.p.video_sizes[v] < self.p.X) and v not in self.cache_servers[c]
@@ -90,6 +93,9 @@ class Solution:
 
         return True
 
+    def get_minimal_latency(self, v, e):
+        return self.request_minimal_latencies.get((v, e)) or self.p.endpoints_server_latencies[e]
+
     def calculate_score(self):
         assert self.check_correctness()
         video_to_servers = [[] for i in range(self.p.V)]
@@ -97,12 +103,15 @@ class Solution:
             for video in server:
                 video_to_servers[video].append(i)
         total_improve = 0
-        for req in self.p.requests:
-            baseline_latency = self.p.endpoints_server_latencies[req[1]]
+        for v, e, c in self.p.requests:
+            baseline_latency = self.p.endpoints_server_latencies[e]
             minmal_latency = baseline_latency
-            for server in video_to_servers[req[0]]:
-                minmal_latency = min(minmal_latency, self.p.endpoints_caches[req[1]][server])
-            total_improve += (baseline_latency - minmal_latency) * req[2]
+            for server in video_to_servers[v]:
+                minmal_latency = min(minmal_latency, self.p.endpoints_caches[e][server])
+            if minmal_latency < baseline_latency:
+                self.request_minimal_latencies[(v, e)] = minmal_latency
+            total_improve += (baseline_latency - minmal_latency) * c
         total_improve /= self.p.total_requests
         total_improve *= 1000
+        self.improvements_history.append(total_improve)
         return total_improve
