@@ -114,4 +114,29 @@ class Solution:
 
     def calculate_score(self):
         assert self.check_correctness()
-        return 0
+
+        sum = 0
+
+        for i in range(0, len(self.slideshow) - 1):
+            s1 = self.slideshow[i]
+            s2 = self.slideshow[i + 1]
+
+            if (len(s1) == 1):
+                tags_s1 = self.p.tags[s1[0]]
+            elif (len(s1) == 2):
+                tags_s1 = self.p.tags[s1[0]] | self.p.tags[s1[1]]
+
+            if (len(s2) == 1):
+                tags_s2 = self.p.tags[s2[0]]
+            elif (len(s2) == 2):
+                tags_s2 = self.p.tags[s2[0]] | self.p.tags[s2[1]]
+
+            common = len(tags_s1 & tags_s2)
+            s1_only = len(tags_s1) - common
+            s2_only = len(tags_s2) - common
+
+            factor = min(common, s1_only, s2_only)
+            sum += factor
+
+        return sum
+
