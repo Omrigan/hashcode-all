@@ -4,30 +4,27 @@ import random
 def computescore(x,y):
     a = x[1]
     b = y[1]
-    return min(len(a|b), len(a-b), len(b-a))
+    return min(len(a&b), len(a-b), len(b-a))
 
 def solve_antonio(p : Problem, input ):
-    s = []
+    s = Solution(p)
     myset = set(input)
     current = myset.pop()
-    #s.append(current[0])
-    s.append(current)
-    #for i in range(0,len(input)-1):
+    s.add_any(current[0])
     while (len(myset)>0):
-        #print(len(myset),current)
-        #print(s)
-        #print(myset)
         tmp_max = -1
         selected_item = None
-        for val in myset:
+        #for i, val in enumerate(myset):
+        #   if(i > 250):
+        #        break
+        for val in random.sample(myset, 200):
             tmp = computescore(current,val)
-            print(tmp)
+            #print("comparing",current,val,tmp)
             if (tmp >= tmp_max):
                 tmp_max = tmp
                 selected_item = val
         current = selected_item
-        #s.append(selected_item[0])
-        s.append(selected_item)
+        s.add_any(selected_item[0])
         myset.remove(selected_item)
     return s
 
@@ -36,5 +33,3 @@ if __name__ == "__main__":
     samplelist = [(None,frozenset({"a","b"})),(None,frozenset({"a","e","b"})),(None,frozenset({"f","g"})),(None,frozenset({"f","g","h"}))]
     #s = solve_antonio(p, p.result_images )
     s = solve_antonio(p, samplelist )
-    print(str(s))
-    print("done")

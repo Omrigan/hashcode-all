@@ -1,6 +1,7 @@
 from read_write import Problem, Solution
 import os
 from dummy import solve_random
+from  solve_antonio import solve_antonio
 
 INPUT_DIR = "input2019/"
 OUTPUT_DIR = "output/"
@@ -12,7 +13,10 @@ FILENAMES = ["a_example.txt",
 
 
 def final_solution(p):
-    return solve_random(p)
+    #return solve_random(p)
+    s = solve_antonio(p, p.result_images)
+    assert s.check_correctness()
+    return s 
 
 
 if __name__ == "__main__":
