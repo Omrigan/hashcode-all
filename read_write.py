@@ -43,28 +43,34 @@ class Problem:
                     self.dictionary[tag] = len(self.dictionary)
                 tags.add(self.dictionary[tag])
 
-            self.tags.append(tags)
+            self.tags.append(frozenset(tags))
         self.preprocess()
 
     def preprocess(self):
         self.vertical_images = []
         self.result_images = []
         for pic_id, typ, tags in zip(self.pic_id, self.orientation, self.tags):
-            if typ == 'v':
+            if typ == 'V':
                 self.vertical_images.append((pic_id, tags))
             else:
-                self.result_images.append((False, pic_id, tags))
+                self.result_images.append((pic_id, tags))
         random.shuffle(self.vertical_images)
-        for i in range(0, len(self.vertical_images) // 2):
-            self.result_images.append((True, (self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
-                                       self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1]))
 
+        for i in range(0, len(self.vertical_images) // 2):
+            self.result_images.append(((self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
+                                       frozenset(self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1])))
 
 
 class Solution:
     def __init__(self, p: Problem):
         self.p = p
         self.slideshow = []
+
+    def add_any(self, elem):
+        if type(elem) is int:
+            self.slideshow.append([elem])
+        else:
+            self.slideshow.append(list(elem))
 
     def add_horizontal(self, id):
         self.slideshow.append([id])
@@ -103,15 +109,38 @@ class Solution:
                 if (id1 < 0 or id2 >= len(self.p.orientation)):
                     return False
                 if (not increase_dict_count(ids, id1) or
-                    not increase_dict_count(ids, id2)):
+                        not increase_dict_count(ids, id2)):
                     return False
                 if (self.p.orientation[id1] != 'V' or
-                    self.p.orientation[id2] != 'V'):
+                        self.p.orientation[id2] != 'V'):
                     return False
-
 
         return True
 
     def calculate_score(self):
         assert self.check_correctness()
-        return 0
+
+        sum = 0
+
+        for i in range(0, len(self.slideshow) - 1):
+            s1 = self.slideshow[i]
+            s2 = self.slideshow[i + 1]
+
+            if (len(s1) == 1):
+                tags_s1 = self.p.tags[s1[0]]
+            elif (len(s1) == 2):
+                tags_s1 = self.p.tags[s1[0]] | self.p.tags[s1[1]]
+
+            if (len(s2) == 1):
+                tags_s2 = self.p.tags[s2[0]]
+            elif (len(s2) == 2):
+                tags_s2 = self.p.tags[s2[0]] | self.p.tags[s2[1]]
+
+            common = len(tags_s1 & tags_s2)
+            s1_only = len(tags_s1) - common
+            s2_only = len(tags_s2) - common
+
+            factor = min(common, s1_only, s2_only)
+            sum += factor
+
+        return sum
