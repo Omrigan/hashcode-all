@@ -2,9 +2,9 @@ from read_write import *
 import random
 
 from problem2017.read_write import Problem, Solution
-from problem2017.dummy import stupid_solve
+from problem2017.dummy import stupid_solve , solve_antonio
 
-POPULATION_SIZE = 20
+POPULATION_SIZE = 3
 MUTATION_PROB = 1
 MUTATION_MAX = 10
 ITERATIONS = 30
@@ -106,4 +106,4 @@ def mutator_combinator(mutatuors, cnt=1):
 
 if __name__ == "__main__":
     p = Problem('problem2017/streaming/kittens.in.txt')
-    run_genetic(lambda: stupid_solve(p), sample_combinator, mutator_combinator([sample_mutator, other_mutator], 4))
+    run_genetic(lambda: solve_antonio(p), sample_combinator, mutator_combinator([sample_mutator, other_mutator], 4))
