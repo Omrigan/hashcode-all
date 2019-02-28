@@ -1,8 +1,8 @@
 from read_write import *
 import random
 
-from read_write import Problem, Solution
-from dummy import stupid_solve
+from problem2017.read_write import Problem, Solution
+from problem2017.dummy import stupid_solve
 
 POPULATION_SIZE = 20
 MUTATION_PROB = 1
@@ -105,5 +105,5 @@ def mutator_combinator(mutatuors, cnt=1):
 
 
 if __name__ == "__main__":
-    p = Problem('streaming/kittens.in.txt')
+    p = Problem('problem2017/streaming/kittens.in.txt')
     run_genetic(lambda: stupid_solve(p), sample_combinator, mutator_combinator([sample_mutator, other_mutator], 4))

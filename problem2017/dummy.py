@@ -1,4 +1,4 @@
-from read_write import Problem, Solution
+from problem2017.read_write import Problem, Solution
 import random
 
 

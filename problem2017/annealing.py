@@ -1,7 +1,7 @@
 from simanneal import Annealer
-from read_write import Problem, Solution
-from genetic import sample_mutator, other_mutator, mutator_combinator
-from dummy import stupid_solve
+from problem2017.read_write import Problem, Solution
+from problem2017.genetic import sample_mutator, other_mutator, mutator_combinator
+from problem2017.dummy import stupid_solve
 
 
 class MyProblem(Annealer):
@@ -21,7 +21,7 @@ class MyProblem(Annealer):
 
 
 if __name__ == "__main__":
-    p = Problem('streaming/kittens.in.txt')
+    p = Problem('problem2017/streaming/kittens.in.txt')
     ann = MyProblem(stupid_solve(p), mutator_combinator([sample_mutator, other_mutator], 2))
     result = ann.anneal()
     print(result)
