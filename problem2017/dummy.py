@@ -37,6 +37,6 @@ def solve_antonio(p: Problem):
         cache_servers.sort(key=lambda x: x[1])
         for c in cache_servers:
             if s.possible(c[0], video):
-            s.attach(c[0], video)
-                #break
+                s.attach(c[0], video)
+                break
     return s

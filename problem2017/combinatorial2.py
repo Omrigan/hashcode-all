@@ -1,6 +1,6 @@
 from read_write import Problem, Solution
 from tqdm import tqdm
-from pyscipopt import Model, quicksum
+#from pyscipopt import Model, quicksum
 import random
 
 
