@@ -112,6 +112,13 @@ class Solution:
         else:
             self.slideshow.append(list(elem))
 
+    def add_any_head(self, elem):
+        if type(elem) is int:
+            self.slideshow.insert(0,[elem])
+        else:
+            self.slideshow.insert(0,list(elem))
+
+
     def add_horizontal(self, id):
         self.slideshow.append([id])
 
@@ -157,8 +164,9 @@ class Solution:
 
         return True
 
-    def calculate_score(self):
-        assert self.check_correctness()
+    def calculate_score(self, do_check=True):
+        if do_check:
+            assert self.check_correctness()
 
         sum = 0
 
