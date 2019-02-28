@@ -72,6 +72,13 @@ class Solution:
         else:
             self.slideshow.append(list(elem))
 
+    def add_any_head(self, elem):
+        if type(elem) is int:
+            self.slideshow.insert(0,[elem])
+        else:
+            self.slideshow.insert(0,list(elem))
+
+
     def add_horizontal(self, id):
         self.slideshow.append([id])
 

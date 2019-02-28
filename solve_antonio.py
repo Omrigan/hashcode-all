@@ -6,25 +6,38 @@ def computescore(x,y):
     b = y[1]
     return min(len(a&b), len(a-b), len(b-a))
 
-iteration = 1
+iteration = 100
 
 def solve_antonio_sampling(p : Problem, input ):
     s = Solution(p)
     myset = set(input)
-    current = myset.pop()
-    s.add_any(current[0])
+    tail = myset.pop()
+    head = myset.pop()
+    s.add_any(head[0])
+    s.add_any(tail[0])
     while (len(myset)>0):
-        tmp_max = -1
-        selected_item = None
+        tmp_max_tail = -1
+        selected_item_tail = None
+        tmp_max_head = -1
+        selected_item_head = None
         testset = random.sample(myset,min(iteration,len(myset)))
         for val in testset: 
-            tmp = computescore(current,val)
-            if (tmp >= tmp_max):
-                tmp_max = tmp
-                selected_item = val
-        current = selected_item
-        s.add_any(selected_item[0])
-        myset.remove(selected_item)
+            tmp_tail = computescore(tail,val)
+            tmp_head = computescore(head,val)
+            if (tmp_tail >= tmp_max_head):
+                tmp_max_tail = tmp_tail
+                selected_item_tail = val
+            if (tmp_head >= tmp_max_head):
+                tmp_max_head = tmp_head
+                selected_item_head = val
+        if tmp_max_tail > tmp_max_head:
+            tail = selected_item_tail
+            s.add_any(selected_item_tail[0])
+            myset.remove(selected_item_tail)
+        else:
+            head = selected_item_head
+            s.add_any_head(selected_item_head[0])
+            myset.remove(selected_item_head)
     return s
 
 def solve_antonio_sequential(p : Problem, input ):
