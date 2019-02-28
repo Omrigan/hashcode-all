@@ -3,12 +3,15 @@ import random
 
 from problem2017.read_write import Problem, Solution
 from problem2017.dummy import stupid_solve
+from multiprocessing import Pool, TimeoutError
 
 POPULATION_SIZE = 20
 MUTATION_PROB = 1
 MUTATION_MAX = 10
 ITERATIONS = 30
 SELECTION_CHANGE = int(POPULATION_SIZE * 0.5)
+
+# pool = Pool(processes=8)
 
 
 def recombinate(population, combinator):
@@ -28,8 +31,12 @@ def mutate(population, mutator):
     return population
 
 
+def add_scores(obj):
+    return obj.calculate_score(False), obj
+
+
 def select(population):
-    population = sorted(((obj.calculate_score(False), obj) for obj in population),
+    population = sorted(map(add_scores, population),
                         key=lambda x: x[0], reverse=True)
     new_population = [(i + random.randrange(SELECTION_CHANGE), obj) for i, (score, obj) in enumerate(population)]
     new_population.sort(key=lambda x: x[0])
