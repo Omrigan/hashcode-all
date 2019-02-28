@@ -8,5 +8,5 @@ if __name__ == "__main__":
     # s.add_vertical(1,2)
     # s.add_horizontal(3)
     s = b_test_sol.b_test_solve(p)
-    s.write('output/b_lovely_landscapes_out.txt')
+    s.write('output/b_lovely_landscapes.txt')
     print("done")
