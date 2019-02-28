@@ -1,6 +1,5 @@
 import random
 
-
 def int_line(f):
     return tuple(int(x) for x in next(f).split(' '))
 
@@ -11,7 +10,8 @@ INFTY = 10 ** 9
 class Problem:
 
     def __init__(self, filename):
-        pass
+        f = open(filename)
+
 
 
 class Solution:
