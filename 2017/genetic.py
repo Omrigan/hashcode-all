@@ -37,7 +37,7 @@ def select(population):
 
 
 def print_scores_formatted(population):
-    print("Scores: " + " ".join([str(obj.calculate_score()) for obj in population[:10]]))
+    print("Scores: " + " ".join(sorted([str(obj.calculate_score()) for obj in population[:10]], reverse=True)))
 
 
 def run_genetic(initial_generator, combinator, mutator):
@@ -79,13 +79,31 @@ def sample_mutator(sol):
     c = random.randrange(sol.p.C)
     if sol.p.video_sizes[v] > sol.p.X:
         raise Exception("Mutator error")
-    sol.normalize_sizes()
+    # sol.normalize_sizes()
     while not sol.possible(c, v):
         sol.drop(c)
     sol.attach(c, v)
     return sol
 
 
+def other_mutator(sol):
+    a = random.randrange(sol.p.C)
+    b = random.randrange(sol.p.C)
+    sol.cache_servers[a], sol.cache_servers[b] = sol.cache_servers[b], sol.cache_servers[a]
+    sol.normalize_sizes()
+    return sol
+
+
+def mutator_combinator(mutatuors, cnt=1):
+    def mutator(sol):
+        for i in range(cnt):
+            mut = random.choice(mutatuors)
+            sol = mut(sol)
+        return sol
+
+    return mutator
+
+
 if __name__ == "__main__":
     p = Problem('streaming/kittens.in.txt')
-    run_genetic(lambda: stupid_solve(p), sample_combinator, sample_mutator)
+    run_genetic(lambda: stupid_solve(p), sample_combinator, mutator_combinator([sample_mutator, other_mutator], 4))

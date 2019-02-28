@@ -65,24 +65,28 @@ class Solution:
     def __init__(self, p: Problem):
         self.p = p
         self.cache_servers = [[] for i in range(p.C)]
-        self.sizes = [0 for i in range(p.C)]
+        # self.sizes = [0 for i in range(p.C)]
         self.request_minimal_latencies = {}
         self.improvements_history = []
 
     def possible(self, c, v):
-        return (self.sizes[c] + self.p.video_sizes[v] < self.p.X) and v not in self.cache_servers[c]
+        for v in self.cache_servers[c]:
+            assert type(v) == int, v
+        return (sum(self.p.video_sizes[vid] for vid in self.cache_servers[c]) + self.p.video_sizes[
+            v] < self.p.X) and v not in self.cache_servers[c]
 
     def normalize_sizes(self):
-        self.sizes = [sum(self.p.video_sizes[v] for v in serv)
-                      for serv in self.cache_servers]
+        pass
+        # self.sizes = [sum(self.p.video_sizes[v] for v in serv)
+        #               for serv in self.cache_servers]
 
     def attach(self, c, v):
         self.cache_servers[c].append(v)
-        self.sizes[c] += self.p.video_sizes[v]
+        # self.sizes[c] += self.p.video_sizes[v]
 
     def drop(self, c):
-        self.sizes[c] -= self.p.video_sizes[self.cache_servers[c][-1]]
-        self.cache_servers[c].pop(-1)
+        # self.sizes[c] -= self.p.video_sizes[self.cache_servers[c][-1]]
+        self.cache_servers[c] = self.cache_servers[c][:-1]
 
     def write(self, filename):
         f = open(filename, 'w')

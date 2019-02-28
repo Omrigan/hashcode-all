@@ -14,9 +14,9 @@ def solve_combinatorial2(problem: Problem):
 
 
 def solve_combinatorial2_one_pass(problem, s, effective_x):
-    requests_factor = 4000
-    cache_factor = 10
-    for i in range(50):
+    requests_factor = 100000
+    cache_factor = 30
+    for i in range(5):
         local_requests = problem.requests[i * requests_factor:(i + 1) * requests_factor]
         cache_range = range(i * cache_factor, (i + 1) * cache_factor)
         s = solve_for_subset(problem, s, local_requests, cache_range, effective_x)
@@ -56,8 +56,9 @@ def solve_for_subset(problem, s, local_requests, cache_range, effective_x):
         var_server = model.addVar('f_server_%s_%s' % (e, v), vtype="BINARY")
         f_vars_server.append(var_server)
         # objective += var_server * number * problem.endpoints_server_latencies[e]
-    objective = (objective / problem.total_requests) * 1000
-
+    objective = objective
+    print(type(objective))
+    # exit(0)
     # Regularization term
     # objective += quicksum(quicksum(p_vars_row) for p_vars_row in p_vars)
     # # Regularization term2
@@ -88,7 +89,7 @@ def solve_for_subset(problem, s, local_requests, cache_range, effective_x):
 
     model.setObjective(objective, "maximize")
     model.optimize()
-
+    # print(dir(model))#.solveConcurrent()
     for v in range(problem.V):
         for c in full_cache_range:
             # print(v, c, p_vars[v][c].solution_value())
