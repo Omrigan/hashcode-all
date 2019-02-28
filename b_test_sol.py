@@ -5,9 +5,6 @@ import tqdm
 N = 80000
 
 
-
-
-
 def b_test_solve(p):
     g = [[] for i in range(N)]
     used = [False for i in range(N)]
