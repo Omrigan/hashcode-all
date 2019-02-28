@@ -7,4 +7,4 @@ services:
     volumes:
       - .:/hashcode
     command: ping 0.0.0.0
-    working_dir: /hashcode/2017
+    working_dir: /hashcode/problem2017
