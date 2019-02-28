@@ -4,14 +4,14 @@ import random
 from problem2017.read_write import Problem, Solution
 from problem2017.dummy import stupid_solve
 from multiprocessing import Pool, TimeoutError
-from problem2017.dummy import stupid_solve , solve_antonio
+from problem2017.dummy import stupid_solve, solve_antonio
 
-
-POPULATION_SIZE = 3
-MUTATION_PROB = 1
+POPULATION_SIZE = 30
+MUTATION_PROB = 0.5
 MUTATION_MAX = 10
 ITERATIONS = 30
 SELECTION_CHANGE = int(POPULATION_SIZE * 0.5)
+
 
 # pool = Pool(processes=8)
 
@@ -26,9 +26,9 @@ def recombinate(population, combinator):
 
 
 def mutate(population, mutator):
-    for i in range(POPULATION_SIZE):
+    for i in range(len(population)):
         if random.random() < MUTATION_PROB:
-            for i in range(random.randrange(MUTATION_MAX)):
+            for j in range(random.randrange(MUTATION_MAX)):
                 population[i] = mutator(population[i])
     return population
 
@@ -60,8 +60,8 @@ def run_genetic(initial_generator, combinator, mutator):
     for i in range(ITERATIONS):
         print("Step:", i)
         print_scores_formatted(population)
-        population = recombinate(population, combinator)
-        print("Recombination done")
+        # population = recombinate(population, combinator)
+        # print("Recombination done")
         # print_scores_formatted(population)
         population = mutate(population, mutator)
         print("Mutation done")
