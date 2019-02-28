@@ -4,8 +4,13 @@ ORIENT_IDX = 0
 NUM_TAGS_IDX = 1
 
 
-def int_line(f):
-    return tuple(int(x) for x in next(f).split(' '))
+def increase_dict_count(dict, id):
+    if (id not in dict):
+        dict[id] = 1;
+        return True
+    else:
+        dict[id] = dict[id] + 1
+        return False
 
 
 INFTY = 10 ** 9
@@ -27,7 +32,7 @@ class Problem:
         for i in range(self.num_pics):
             line = next(f).strip().split(' ')
             self.pic_id.append(i)
-            self.orientation = line[ORIENT_IDX]
+            self.orientation.append(line[ORIENT_IDX])
             self.num_tags.append(int(line[NUM_TAGS_IDX]))
 
             tags = []
@@ -64,6 +69,32 @@ class Solution:
         pass
 
     def check_correctness(self):
+        ids = dict()
+        for i in range(len(self.slideshow)):
+            slide = self.slideshow[i]
+            if (len(slide) == 1):
+                id = slide[0]
+                if (id < 0 or id >= len(self.p.orientation)):
+                    return False
+                if (not increase_dict_count(ids, id)):
+                    return False
+                if (self.p.orientation[id] != 'H'):
+                    return False
+            elif (len(slide) == 2):
+                id1 = slide[0]
+                id2 = slide[1]
+                if (id1 < 0 or id1 >= len(self.p.orientation)):
+                    return False
+                if (id1 < 0 or id2 >= len(self.p.orientation)):
+                    return False
+                if (not increase_dict_count(ids, id1) or
+                    not increase_dict_count(ids, id2)):
+                    return False
+                if (self.p.orientation[id1] != 'V' or
+                    self.p.orientation[id2] != 'V'):
+                    return False
+
+
         return True
 
     def calculate_score(self):
