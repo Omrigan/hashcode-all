@@ -117,8 +117,9 @@ class Solution:
 
         return True
 
-    def calculate_score(self):
-        assert self.check_correctness()
+    def calculate_score(self, do_check=True):
+        if do_check:
+            assert self.check_correctness()
 
         sum = 0
 

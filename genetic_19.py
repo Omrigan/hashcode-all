@@ -15,15 +15,8 @@ def sample_mutator(sol):
     return sol
 
 
-def other_mutator(sol):
-    a = random.randrange(sol.p.C)
-    b = random.randrange(sol.p.C)
-    sol.cache_servers[a], sol.cache_servers[b] = sol.cache_servers[b], sol.cache_servers[a]
-    sol.normalize_sizes()
-    return sol
-
-
 if __name__ == "__main__":
-    p = Problem('problem2017/streaming/kittens.in.txt')
+    p = Problem('input2019/e_shiny_selfies.txt')
+
     genetic.run_genetic(lambda: solve_random(p), sample_combinator,
-                        genetic.mutator_combinator([sample_mutator, other_mutator], 4))
+                        genetic.mutator_combinator([sample_mutator], 4))
