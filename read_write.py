@@ -22,6 +22,8 @@ class Problem:
         self.num_tags = [] # int
         self.tags = []  # string[]
 
+        self.dictionary = dict()
+
         for i in range(self.num_pics):
             line = next(f).strip().split(' ')
             self.pic_id.append(i)
@@ -31,7 +33,10 @@ class Problem:
             tags = []
 
             for j in range(NUM_TAGS_IDX + 1, len(line)):
-                tags.append(line[j])
+                tag = line[j]
+                if (tag not in self.dictionary):
+                    self.dictionary[tag] = len(self.dictionary)
+                tags.append(self.dictionary[tag])
 
             self.tags.append(tags)
 
