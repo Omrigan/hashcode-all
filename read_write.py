@@ -43,7 +43,7 @@ class Problem:
                     self.dictionary[tag] = len(self.dictionary)
                 tags.add(self.dictionary[tag])
 
-            self.tags.append(tags)
+            self.tags.append(frozenset(tags))
         self.preprocess()
 
     def preprocess(self):
@@ -53,18 +53,21 @@ class Problem:
             if typ == 'v':
                 self.vertical_images.append((pic_id, tags))
             else:
-                self.result_images.append((False, pic_id, tags))
+                self.result_images.append((pic_id, tags))
         random.shuffle(self.vertical_images)
-        for i in range(0, len(self.vertical_images) // 2):
-            self.result_images.append((True, (self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
-                                       self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1]))
 
+        for i in range(0, len(self.vertical_images) // 2):
+            self.result_images.append(((self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
+                                       self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1]))
 
 
 class Solution:
     def __init__(self, p: Problem):
         self.p = p
         self.slideshow = []
+
+    def add_any(self, elem):
+        self.slideshow.append(elem)
 
     def add_horizontal(self, id):
         self.slideshow.append([id])
@@ -103,12 +106,11 @@ class Solution:
                 if (id1 < 0 or id2 >= len(self.p.orientation)):
                     return False
                 if (not increase_dict_count(ids, id1) or
-                    not increase_dict_count(ids, id2)):
+                        not increase_dict_count(ids, id2)):
                     return False
                 if (self.p.orientation[id1] != 'V' or
-                    self.p.orientation[id2] != 'V'):
+                        self.p.orientation[id2] != 'V'):
                     return False
-
 
         return True
 
