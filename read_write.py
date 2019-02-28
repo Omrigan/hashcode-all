@@ -67,7 +67,10 @@ class Solution:
         self.slideshow = []
 
     def add_any(self, elem):
-        self.slideshow.append(elem)
+        if type(elem) is int:
+            self.slideshow.append([elem])
+        else:
+            self.slideshow.append(list(elem))
 
     def add_horizontal(self, id):
         self.slideshow.append([id])
