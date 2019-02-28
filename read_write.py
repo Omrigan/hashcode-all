@@ -49,16 +49,56 @@ class Problem:
     def preprocess(self):
         self.vertical_images = []
         self.result_images = []
+
+        sorted_vertical_tags = [[] for i in range(self.num_pics)]
+
         for pic_id, typ, tags in zip(self.pic_id, self.orientation, self.tags):
             if typ == 'V':
                 self.vertical_images.append((pic_id, tags))
+                sorted_tags = list(tags)
+                sorted_tags.sort()
+                sorted_vertical_tags[pic_id] = sorted_tags
             else:
                 self.result_images.append((pic_id, tags))
-        random.shuffle(self.vertical_images)
+    
+        vertical_indices = [i for i in range(len(self.vertical_images))]
+        random.shuffle(vertical_indices)
 
-        for i in range(0, len(self.vertical_images) // 2):
-            self.result_images.append(((self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
-                                       frozenset(self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1])))
+        pair = [-1 for i in range(len(self.vertical_images))]
+
+        CHUNK_SIZE = 100
+        used = [False for i in range(CHUNK_SIZE)]
+
+        for ind in range(0, len(self.vertical_images), CHUNK_SIZE):
+            cur_chunk_size = min(CHUNK_SIZE, len(self.vertical_images) - ind)
+            
+            for i in range(cur_chunk_size):
+                used[i] = False
+
+            union_sizes = []
+
+            for i in range(cur_chunk_size):
+                for j in range(cur_chunk_size):
+                    if i == j:
+                        continue
+                    ind_i = vertical_indices[ind + i]
+                    ind_j = vertical_indices[ind + j]
+                    cur_union_size = len(frozenset(self.vertical_images[ind_i][1] | self.vertical_images[ind_j][1]))
+                    union_sizes.append((cur_union_size, i, j))
+
+            union_sizes.sort(reverse = True)
+            
+            for _, x, y in union_sizes:
+                if used[x] == False and used[y] == False:
+                    used[x] = True
+                    used[y] = True
+                    pair[vertical_indices[ind + x]] = vertical_indices[ind + y]
+                    pair[vertical_indices[ind + y]] = -1
+
+        for i in range(0, len(self.vertical_images)):
+            if pair[i] != -1:
+                self.result_images.append(((self.vertical_images[i][0], self.vertical_images[pair[i]][0]),
+                                            frozenset(self.vertical_images[i][1] | self.vertical_images[pair[i]][1])))
 
 
 class Solution:
