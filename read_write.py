@@ -1,5 +1,9 @@
 import random
 
+ORIENT_IDX = 0
+NUM_TAGS_IDX = 1
+
+
 def int_line(f):
     return tuple(int(x) for x in next(f).split(' '))
 
@@ -13,19 +17,21 @@ class Problem:
         f = open(filename)
 
         self.num_pics = int(next(f));
+        self.orientation = [] # h/v
         self.pic_id = [] # int
         self.num_tags = [] # int
         self.tags = []  # string[]
 
         for i in range(self.num_pics):
-            line = next(f).split(' ')
-            self.pic_id.append(int(line[0]))
-            self.num_tags.append(int(line[1]))
+            line = next(f).strip().split(' ')
+            self.pic_id.append(i)
+            self.orientation = line[ORIENT_IDX]
+            self.num_tags.append(int(line[NUM_TAGS_IDX]))
 
             tags = []
 
-            for j in range(2, len(line)):
-                tags.append(line[i])
+            for j in range(NUM_TAGS_IDX + 1, len(line)):
+                tags.append(line[j])
 
             self.tags.append(tags)
 
