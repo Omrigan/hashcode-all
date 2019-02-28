@@ -9,7 +9,11 @@ def solve_random(p):
         s.add_any(idx)
     return s
 
+def evalute_pair(first, second):
+    return
+
+
 def solve_append_random(p):
-    remaining_images = set()
+    remaining_images = set(p.result_images)
 
 

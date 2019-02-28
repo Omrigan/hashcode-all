@@ -22,7 +22,11 @@ def final_solution(p):
 if __name__ == "__main__":
     for filename in FILENAMES:
         p = Problem(INPUT_DIR + filename)
-        s = final_solution(p)
+        s = Solution(p)
+        if filename == "b_lovely_landscapes.txt":
+            s = b_test_sol.b_test_solve(p)
+        else:
+            s = final_solution(p)
         s.write(OUTPUT_DIR + filename + ".out")
         print(filename, s.calculate_score())
     os.system("zip result.zip *.py")
