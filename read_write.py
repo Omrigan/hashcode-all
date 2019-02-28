@@ -44,8 +44,23 @@ class Problem:
 class Solution:
     def __init__(self, p: Problem):
         self.p = p
+        self.slideshow = []
+
+    def add_horizontal(self, id):
+        self.slideshow.append([id])
+
+    def add_vertical(self, id1, id2):
+        self.slideshow.append([id1, id2])
 
     def write(self, filename):
+        f = open(filename, 'w')
+        f.write("%s\n" % len(self.slideshow))
+        for i in range(len(self.slideshow)):
+            slide = self.slideshow[i]
+            if (len(self.slideshow[i]) == 1):
+                f.write("%d\n" % slide[0]);
+            elif (len(self.slideshow[i]) == 2):
+                f.write("%d %d\n" % (slide[0], slide[1]))
         pass
 
     def check_correctness(self):
