@@ -4,18 +4,11 @@ import tqdm
 
 N = 80000
 
-def dfs(v, solution, used, g):
-    used[v] = True
-    solution.add_horizontal(v)
-    for u in g[v]:
-        if used[u] == False:
-            dfs(u, solution, used, g)
-
 def b_test_solve(p):
     g = [[] for i in range(N)] 
-    used = [0] * N
+    used = [False for i in range(N)]
 
-    sys.setrecursionlimit(N)
+    sys.setrecursionlimit(N * 10)
 
     tags_ids = dict()
     solution = Solution(p)
@@ -31,8 +24,20 @@ def b_test_solve(p):
             g[tag_id_list[0]].append(tag_id_list[1])
             g[tag_id_list[1]].append(tag_id_list[0])
 
+    v = -1
     for i in range(N):
         if used[i] == False:
-            dfs(i, solution, used, g)
+            v = i
+            while (True):
+                used[v] = True
+                found = False
+                solution.add_horizontal(v)
+                for u in g[v]:
+                    if used[u] == False:
+                        v = u
+                        found = True
+                        break
+                if found == False:
+                    break                    
 
     return solution
