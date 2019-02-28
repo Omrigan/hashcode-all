@@ -20,7 +20,7 @@ if __name__ == "__main__":
         p = Problem(INPUT_DIR + filename)
         s = final_solution(p)
         s.write(OUTPUT_DIR + filename + ".out")
-        s.calculate_score()
+        print(filename, s.calculate_score())
     os.system("zip result.zip *.py")
 
     # s.write('solutions/kittens.out')

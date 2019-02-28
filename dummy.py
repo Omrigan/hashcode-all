@@ -10,5 +10,7 @@ def solve_random(p):
             s.add_any([idx])
         else:
             s.add_any(list(idx))
-    print(s.slideshow)
     return s
+
+def solve_append_random(p):
+    remaining_images = set()

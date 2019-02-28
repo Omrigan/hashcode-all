@@ -50,7 +50,7 @@ class Problem:
         self.vertical_images = []
         self.result_images = []
         for pic_id, typ, tags in zip(self.pic_id, self.orientation, self.tags):
-            if typ == 'v':
+            if typ == 'V':
                 self.vertical_images.append((pic_id, tags))
             else:
                 self.result_images.append((pic_id, tags))
@@ -58,7 +58,7 @@ class Problem:
 
         for i in range(0, len(self.vertical_images) // 2):
             self.result_images.append(((self.vertical_images[2 * i][0], self.vertical_images[2 * i + 1][0]),
-                                       self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1]))
+                                       frozenset(self.vertical_images[2 * i][1] | self.vertical_images[2 * i + 1][1])))
 
 
 class Solution:
@@ -141,4 +141,3 @@ class Solution:
             sum += factor
 
         return sum
-
